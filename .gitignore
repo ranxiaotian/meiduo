@@ -115,4 +115,4 @@ dmypy.json
 .pyre/
 
 # pycharm .idea
-.idea
+meiduo_mall/.idea/*
