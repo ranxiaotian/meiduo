@@ -16,20 +16,26 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from django.http import HttpResponse
-def log(request):
+# from django.http import HttpResponse
+# def log(request):
+#
+#     # 1.导入
+#     import logging
+#     # 2.创建日志器
+#     logger=logging.getLogger('django')
+#     # 3.调动日志器的方法来保存日志
+#     logger.info('用户登录了')
+#     logger.warning('redis缓存不足')
+#     logger.error('该记录不存在')
+#     logger.debug('~~~~~~~~~~~~~~~')
+#
+#     return HttpResponse('log')
 
-    # 1.导入
-    import logging
-    # 2.创建日志器
-    logger=logging.getLogger('django')
-    # 3.调动日志器的方法来保存日志
-    logger.info('用户登录了')
-    logger.warning('redis缓存不足')
-    logger.error('该记录不存在')
-    logger.debug('~~~~~~~~~~~~~~~')
+#注册转换器
+from utils.converters import UsernameConverter
+from django.urls import register_converter
 
-    return HttpResponse('log')
+register_converter(UsernameConverter,'username')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
