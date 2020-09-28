@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
+# https://gitee.com/itcastitheima/shunyi_git_42.git 远程仓库地址
+
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'apps.users',
 ]
 
 MIDDLEWARE = [
