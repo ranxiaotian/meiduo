@@ -174,9 +174,21 @@ class LoginView(View):
         if not all([username,password]):
             return JsonResponse({'code':400,'errmsg':'参数不全'})
 
+
+        # 确定 我们是根据手机号查询 还是 根据用户名查询
+
+        # USERNAME_FIELD 我们可以根据 修改 User. USERNAME_FIELD 字段
+        # 来影响authenticate 的查询
+        # authenticate 就是根据 USERNAME_FIELD 来查询
+        if re.match('1[3-9]\d{9}',username):
+            User.USERNAME_FIELD='mobile'
+        else:
+            User.USERNAME_FIELD='username'
+
         # 3. 验证用户名和密码是否正确
         # 我们可以通过模型根据用户名来查询
         # User.objects.get(username=username)
+
 
         # 方式2
         from django.contrib.auth import authenticate
