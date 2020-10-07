@@ -241,3 +241,20 @@ class LogoutView(View):
         response.delete_cookie('username')
 
         return response
+
+# 用户中心，也必须是登录用户
+
+"""
+
+LoginRequiredMixin 未登录的用户 会返回 重定向。重定向并不是JSON数据
+
+我们需要是  返回JSON数据
+"""
+
+
+from utils.views import LoginRequiredJSONMixin
+class CenterView(LoginRequiredJSONMixin,View):
+
+    def get(self,request):
+
+        return JsonResponse({'code':0,'errmsg':'ok'})
