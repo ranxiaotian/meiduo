@@ -204,3 +204,35 @@ class OauthQQView(View):
             7. 返回响应
 
 """
+
+##########itsdangerous的基本使用##############################################
+# itsdangerous就是为了数据加密的
+
+#加密
+# 1. 导入 itsdangerous的类
+# 2. 创建类的实例对象
+# 3. 加密数据
+from meiduo_mall import settings
+# 1. 导入 itsdangerous的类
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+
+# TimedJSONWebSignatureSerializer 这个类 不仅可以对数据进行加密，还是可以对数据设置一个时效
+# 2. 创建类的实例对象
+# secret_key,           秘钥
+# expires_in=None       数据的过期时间（单位是秒）
+s=Serializer(secret_key=settings.SECRET_KEY,expires_in=3600)
+#
+# 3. 加密数据
+token=s.dumps({'openid':'1234567890'})
+# b'eyJhbGciOiJIUzUxMiIsImlhdCI6MTYwMjE0Mzg3MCwiZXhwIjoxNjAyMTQ3NDcwfQ.eyJvcGVuaWQiOiIxMjM0NTY3ODkwIn0._O8UkkDSrETJUreKnfOKANLcAszEvFxBUYSG-Q8MogCJAOvoDxxwkAOKlEMB9yL46R_yS1ok1Rgw6HsO_hIjwg'
+
+
+###############################################################
+#解密
+
+# 1. 导入 itsdangerous的类
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+# 2. 创建类的实例对象
+s=Serializer(secret_key=settings.SECRET_KEY,expires_in=3600)
+# 3. 解密数据
+s.loads(token)
