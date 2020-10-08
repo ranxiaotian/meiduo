@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'apps.users',
     'apps.verifications',
+    'apps.oauth',
     # CORS
     'corsheaders',
 ]
