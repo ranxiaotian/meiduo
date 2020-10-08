@@ -102,7 +102,8 @@ class QQLoginURLView(View):
         6. 如果绑定过，则直接登录
 
 """
-
+from apps.oauth.models import OAuthQQUser
+from django.contrib.auth import login
 class OauthQQView(View):
 
     def get(self,request):
@@ -120,7 +121,24 @@ class OauthQQView(View):
         # 3. 再通过token换取openid
         # 'CBCF1AA40E417CD73880666C3D6FA1D6'
         openid=qq.get_open_id(token)
-        # 4. 根据openid进行判断
-        # 5. 如果没有绑定过，则需要绑定
-        # 6. 如果绑定过，则直接登录
-        pass
+
+        # 4. 根据openid进行查询判断
+        try:
+            qquser=OAuthQQUser.objects.get(openid=openid)
+        except OAuthQQUser.DoesNotExist:
+            #不存在
+            # 5. 如果没有绑定过，则需要绑定
+            response = JsonResponse({'code':400,'access_token':openid})
+            return response
+        else:
+            # 存在
+            # 6. 如果绑定过，则直接登录
+            # 6.1 设置session
+            login(request,qquser.user)
+            # 6.2 设置cookie
+            response = JsonResponse({'code':0,'errmsg':'ok'})
+
+            response.set_cookie('username',qquser.user.username)
+
+            return response
+
