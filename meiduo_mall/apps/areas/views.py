@@ -40,3 +40,39 @@ class AreaView(View):
         # 3.返回响应
         return JsonResponse({'code':0,'errmsg':'ok','province_list':province_list})
 
+
+"""
+需求：
+    获取市、区县信息
+前端：
+    当页面修改省、市的时候，会发送axios请求，来获取 下一级的信息
+后端：
+    请求：         要传递省份id、市的id
+    业务逻辑：       根据id查询信息，将查询结果集转换为字典列表
+    响应：         JSON
+
+    路由：         areas/id/
+    步骤：
+        1.获取省份id、市的id,查询信息
+        2.将对象转换为字典数据
+        3.返回响应
+"""
+
+class SubAreaView(View):
+
+    def get(self,request,id):
+        # 1.获取省份id、市的id,查询信息
+        # Area.objects.filter(parent_id=id)
+        # Area.objects.filter(parent=id)
+
+        up_level = Area.objects.get(id=id)  #
+        down_level=up_level.subs.all()  #
+        # 2.将对象转换为字典数据
+        data_list=[]
+        for item in down_level:
+            data_list.append({
+                'id':item.id,
+                'name':item.name
+            })
+        # 3.返回响应
+        return JsonResponse({'code':0,'errmsg':'ok','sub_data':{'subs':data_list}})
