@@ -310,6 +310,26 @@ class EmailView(LoginRequiredJSONMixin,View):
         user.save()
         # 4. 发送一封激活邮件
         # 一会单独讲发送邮件
+        from django.core.mail import send_mail
+        # subject, message, from_email, recipient_list,
+        # subject,      主题
+        subject='美多商城激活邮件'
+        # message,      邮件内容
+        message=""
+        # from_email,   发件人
+        from_email='美多商城<qi_rui_hua@163.com>'
+        # recipient_list, 收件人列表
+        recipient_list = ['qi_rui_hua@126.com','qi_rui_hua@163.com']
+
+        # 邮件的内容如果是 html 这个时候使用 html_message
+        html_message="点击按钮进行激活 <a href='http://www.itcast.cn'>激活</a>"
+
+        send_mail(subject=subject,
+                  message=message,
+                  from_email=from_email,
+                  recipient_list=recipient_list,
+                  html_message=html_message)
+
         # 5. 返回响应
         return JsonResponse({'code':0,'errmsg':'ok'})
 
@@ -321,3 +341,25 @@ django 项目
 4. 掌握分析问题，解决问题的能力（debug）
 """
 
+"""
+
+1. 设置邮件服务器
+
+    我们设置 163邮箱服务器
+    相当于 我们开启了 让163帮助我们发送邮件。同时设置了 一些信息（特别是授权码）
+
+2.  设置邮件发送的配置信息
+    #  让django的哪个类来发送邮件
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    # 邮件服务器的主机和端口号
+    EMAIL_HOST = 'smtp.163.com'
+    EMAIL_PORT = 25
+    
+    # 使用我的 163服务器 和 授权码
+    #发送邮件的邮箱
+    EMAIL_HOST_USER = 'qi_rui_hua@163.com'
+    #在邮箱中设置的客户端授权密码
+    EMAIL_HOST_PASSWORD = '123456abc'
+    
+3. 调用  send_mail 方法
+"""
