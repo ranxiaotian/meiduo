@@ -322,7 +322,13 @@ class EmailView(LoginRequiredJSONMixin,View):
         recipient_list = ['qi_rui_hua@126.com','qi_rui_hua@163.com']
 
         # 邮件的内容如果是 html 这个时候使用 html_message
-        html_message="点击按钮进行激活 <a href='http://www.itcast.cn'>激活</a>"
+        # 4.1 对a标签的连接数据进行加密处理
+        # user_id=1
+        from apps.users.utils import generic_email_verify_token
+        token=generic_email_verify_token(request.user.id)
+
+        # 4.2 组织我们的激活邮件
+        html_message="点击按钮进行激活 <a href='http://www.itcast.cn/?token=%s'>激活</a>"%token
 
         send_mail(subject=subject,
                   message=message,
