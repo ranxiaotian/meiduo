@@ -20,6 +20,7 @@ class User(AbstractUser):
     default_address = models.ForeignKey('Address', related_name='users', null=True, blank=True,
                                         on_delete=models.SET_NULL, verbose_name='默认地址')
 
+    # addresses
     class Meta:
         db_table='tb_users'
         verbose_name='用户管理'
