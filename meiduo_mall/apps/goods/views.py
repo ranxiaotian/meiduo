@@ -31,4 +31,26 @@ stu_id      teacher_id
 100             999
 200             666
 200             999
+
+商品day01    模型的分析 --》  Fdfs(用于保存图片，视频等文件) --》 为了部署Fdfs学习Docker
+
+
+"""
+
+############上传图片的代码################################
+from fdfs_client.client import Fdfs_client
+
+# 1. 创建客户端
+# 修改加载配置文件的路径
+client=Fdfs_client('utils/fastdfs/client.conf')
+
+# 2. 上传图片
+# 图片的绝对路径
+client.upload_by_filename('/home/ubuntu/Desktop/img/c.png')
+
+# 3. 获取file_id .upload_by_filename 上传成功会返回字典数据
+# 字典数据中 有file_id
+"""
+{'Group name': 'group1', 'Remote file_id': 'group1/M00/00/02/wKgTgF-FCP-AHcq2AAMTeyk-Y3M402.png', 'Status': 'Upload successed.', 'Local file name': '/home/ubuntu/Desktop/img/c.png', 'Uploaded size': '196.00KB', 'Storage IP': '192.168.19.128'}
+
 """
