@@ -185,6 +185,8 @@ pickle.loads(decode_bytes)
 
 """
 from apps.goods.models import SKU
+import pickle
+import base64
 
 class CartsView(View):
 
@@ -277,15 +279,43 @@ class CartsView(View):
                     }
         
             """
-            #     5.1 先有cookie字典
-            carts={
-                sku_id: {'count':count,'selected':True}
+            # {16： {count:3,selected:True}}
+
+            # 5.0 先读取cookie数据
+            cookie_carts=request.COOKIES.get('carts')
+            if cookie_carts:
+                # 对加密的数据解密
+                carts = pickle.loads(base64.b64decode(cookie_carts))
+            else:
+                #     5.1 先有cookie字典
+                carts={}
+
+            # 判断新增的商品 有没有在购物车里
+            if sku_id in carts:
+                # 购物车中 已经有该商品id
+                # 数量累加
+                ## {16： {count:3,selected:True}}
+                origin_count=carts[sku_id]['count']
+                count+=origin_count
+
+            #     carts[sku_id] = {
+            #         'count':count,
+            #         'selected':True
+            #     }
+            # else:
+            # 购物车中 没有该商品id
+            # {16： {count:3,selected:True}}
+            carts[sku_id]={
+                'count':count,
+                'selected':True
             }
+
+
             #     5.2 字典转换为bytes
-            import pickle
+
             carts_bytes=pickle.dumps(carts)
             #     5.3 bytes类型数据base64编码
-            import base64
+
             base64encode=base64.b64encode(carts_bytes)
             #     5.4 设置cookie
             response = JsonResponse({'code': 0, 'errmsg': 'ok'})
