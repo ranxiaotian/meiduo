@@ -326,3 +326,99 @@ class CartsView(View):
             #     5.5 返回响应
             return response
 
+
+    """
+    1.判断用户是否登录
+    2.登录用户查询redis
+        2.1 连接redis
+        2.2 hash        {sku_id:count}
+        2.3 set         {sku_id}
+        2.4 遍历判断
+        2.5 根据商品商品id查询商品信息
+        2.6 将对象数据转换为字典数据
+        2.7 返回响应
+    3.未登录用户查询cookie
+        3.1 读取cookie数据
+        3.2 判断是否存在购物车数据
+            如果存在，则解码            {sku_id:{count:xxx,selected:xxx}}
+            如果不存在，初始化空字典
+        3.3 根据商品id查询商品信息
+        3.4 将对象数据转换为字典数据
+        3.5 返回响应
+        
+        
+    1.判断用户是否登录
+    2.登录用户查询redis
+        2.1 连接redis
+        2.2 hash        {sku_id:count}
+        2.3 set         {sku_id}
+        2.4 遍历判断
+    3.未登录用户查询cookie
+        3.1 读取cookie数据
+        3.2 判断是否存在购物车数据
+            如果存在，则解码            {sku_id:{count:xxx,selected:xxx}}
+            如果不存在，初始化空字典
+            
+    4 根据商品id查询商品信息
+    5 将对象数据转换为字典数据
+    6 返回响应
+        
+    """
+    def get(self,request):
+        # 1.判断用户是否登录
+        user=request.user
+        if user.is_authenticated:
+
+            # 2.登录用户查询redis
+            #     2.1 连接redis
+            redis_cli=get_redis_connection('carts')
+            #     2.2 hash        {2:count,3:count,...}
+            sku_id_counts=redis_cli.hgetall('carts_%s'%user.id)
+            #     2.3 set         {2}
+            selected_ids=redis_cli.smembers('selected_%s'%user.id)
+            #     2.4 将 redis的数据转换为 和 cookie一样
+            #    这样就可以在后续操作的时候 统一操作
+            # {sku_id:{count:xxx,selected:xxx}}
+            carts={}
+
+            for sku_id,count in sku_id_counts.items():
+                carts[sku_id]={
+                    'count':count,
+                    'selected': sku_id in selected_ids
+                }
+        else:
+            # 3.未登录用户查询cookie
+            #     3.1 读取cookie数据
+            cookie_carts=request.COOKIES.get('carts')
+            #     3.2 判断是否存在购物车数据
+            if cookie_carts is not None:
+                #         如果存在，则解码            {sku_id:{count:xxx,selected:xxx}}
+               carts = pickle.loads(base64.b64decode(cookie_carts))
+            else:
+                #         如果不存在，初始化空字典
+                carts={}
+
+        #{sku_id: {count: xxx, selected: xxx}}
+        # 4 根据商品id查询商品信息
+        # 可以直接遍历 carts
+        # 也可以获取 字典的最外层的key，最外层的所有key就是商品id
+        sku_ids=carts.keys()
+        # [1,2,3,4,5]
+        # 可以遍历查询
+        # 也可以用 in
+        skus=SKU.objects.filter(id__in=sku_ids)
+
+        sku_list=[]
+        for sku in skus:
+            # 5 将对象数据转换为字典数据
+            sku_list.append({
+                'id':sku.id,
+                'price':sku.price,
+                'name':sku.name,
+                'default_image_url':sku.default_image.url,
+                'selected': carts[sku.id]['selected'],          #选中状态
+                'count': carts[sku.id]['count'],                # 数量
+                'amount': sku.price*carts[sku.id]['count']      #总价格
+            })
+        # 6 返回响应
+        return JsonResponse({'code':0,'errmsg':'ok','cart_skus':sku_list})
