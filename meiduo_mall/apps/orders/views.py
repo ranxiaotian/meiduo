@@ -87,10 +87,31 @@ class OrderSettlementView(LoginRequiredJSONMixin,View):
                 'price': sku.price
             })
 
+        # 运费
+        from decimal import Decimal
+        freight=Decimal('10')
+        # float double
+        # decimal   -- 货币类型
+
+        # 01010101
+        # 整数
+        # 小数的保存 特殊
+        # 12.5
+        # 12  0.5
+        # 1100  1
+
+        # 12.33
+        # 0.33
+
+        # 100 / 3 = 33.33
+
+        # 33.33   33.33     33.34
+
+
         context = {
             'skus':sku_list,
             'addresses':addresses_list,
-            'freight':10        # 运费
+            'freight':freight        # 运费
         }
 
         return JsonResponse({'code':0,'errmsg':'ok','context':context})
