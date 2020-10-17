@@ -203,6 +203,7 @@ class LoginView(View):
         # 4. session
         from django.contrib.auth import login
         login(request,user)
+
         # 5. 判断是否记住登录
         if remembered:
             # 记住登录 -- 2周 或者 1个月 具体多长时间 产品说了算
@@ -216,6 +217,10 @@ class LoginView(View):
         response = JsonResponse({'code':0,'errmsg':'ok'})
         # 为了首页显示用户信息
         response.set_cookie('username',username)
+
+        # 必须是登录后 合并
+        from apps.carts.utils import merge_cookie_to_redis
+        response = merge_cookie_to_redis(request, response)
 
         return response
 
