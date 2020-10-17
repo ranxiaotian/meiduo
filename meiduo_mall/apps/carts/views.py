@@ -505,3 +505,68 @@ class CartsView(View):
             response.set_cookie('carts',new_carts.decode(),max_age=14*24*3600)
             #     5.5 返回响应
             return response
+
+    """
+    1.接收请求
+    2.验证参数
+    3.根据用户状态
+    4.登录用户操作redis
+        4.1 连接redis
+        4.2 hash
+        4.3 set
+        4.4 返回响应
+    5.未登录用户操作cookie
+        5.1 读取cookie中的购物车数据
+        判断数据是否存在
+        存在则解码
+        不存在则初始化字典
+        5.2 删除数据 {}
+        5.3 我们需要对字典数据进行编码和base64的处理
+        5.4 设置cookie
+        5.5 返回响应
+    
+    """
+    def delete(self,request):
+        # 1.接收请求
+        data=json.loads(request.body.decode())
+        # 2.验证参数
+        sku_id=data.get('sku_id')
+        try:
+            SKU.objects.get(pk=sku_id)  # pk primary key
+        except SKU.DoesNotExist:
+            return JsonResponse({'code':400,'errmsg':'没有此商品'})
+        # 3.根据用户状态
+        user=request.user
+        if user.is_authenticated:
+
+            # 4.登录用户操作redis
+            #     4.1 连接redis
+            redis_cli=get_redis_connection('carts')
+            #     4.2 hash
+            redis_cli.hdel('carts_%s'%user.id,sku_id)
+            #     4.3 set
+            redis_cli.srem('selected_%s'%user.id,sku_id)
+            #     4.4 返回响应
+            return JsonResponse({'code':0,'errmsg':'ok'})
+
+        else:
+            # 5.未登录用户操作cookie
+            #     5.1 读取cookie中的购物车数据
+            cookie_cart=request.COOKIES.get('carts')
+            #     判断数据是否存在
+            if cookie_cart is not None:
+                #     存在则解码
+                carts=pickle.loads(base64.b64decode(cookie_cart))
+            else:
+                #     不存在则初始化字典
+                carts={}
+            #     5.2 删除数据 {}
+            del carts[sku_id]
+            #     5.3 我们需要对字典数据进行编码和base64的处理
+            new_carts=base64.b64encode(pickle.dumps(carts))
+            #     5.4 设置cookie
+            response=JsonResponse({'code':0,'errmsg':'ok'})
+            response.set_cookie('carts',new_carts.decode(),max_age=14*24*3600)
+            #     5.5 返回响应
+            return response
+
