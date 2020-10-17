@@ -259,12 +259,22 @@ class CartsView(View):
             # 4.登录用户保存redis
             #     4.1 连接redis
             redis_cli=get_redis_connection('carts')
+
+            pipeline=redis_cli.pipeline()
             #     4.2 操作hash
             # redis_cli.hset(key,field,value)
-            redis_cli.hset('carts_%s'%user.id,sku_id,count)
+            # 1. 先获取之前的数据，然后累加
+            # 2.
+            # redis_cli.hset('carts_%s'%user.id,sku_id,count)
+            # hincrby
+            # 会进行累加操作
+            pipeline.hincrby('carts_%s'%user.id,sku_id,count)
             #     4.3 操作set
             # 默认就是选中
-            redis_cli.sadd('selected_%s'%user.id,sku_id)
+            pipeline.sadd('selected_%s'%user.id,sku_id)
+
+            #一定要执行！！！
+            pipeline.execute()
             #     4.4 返回响应
             return JsonResponse({'code':0,'errmsg':'ok'})
         else:
@@ -382,8 +392,8 @@ class CartsView(View):
             carts={}
 
             for sku_id,count in sku_id_counts.items():
-                carts[sku_id]={
-                    'count':count,
+                carts[int(sku_id)]={
+                    'count':int(count),
                     'selected': sku_id in selected_ids
                 }
         else:
