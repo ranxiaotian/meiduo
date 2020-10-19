@@ -222,9 +222,9 @@ class OrderCommitView(LoginRequiredJSONMixin,View):
         # Hour
         # Minute
         # Second
-        # %f 毫秒
+        # %f 微秒
         # timezone.localtime() 2020-10-19 10:03:10
-        order_id=timezone.localtime().strftime('%Y%m%d%H%M%S') + '%09d'%user.id
+        order_id=timezone.localtime().strftime('%Y%m%d%H%M%S%f') + '%09d'%user.id
 
         # 支付状态由支付方式决定
         # 代码是对的。可读性差
@@ -290,10 +290,29 @@ class OrderCommitView(LoginRequiredJSONMixin,View):
                     #       2.7 如果不充足，下单失败
                     return JsonResponse({'code':400,'errmsg':'库存不足'})
 
+                from time import sleep
+                sleep(7)
                 #       2.8 如果充足，则库存减少，销量增加
-                sku.stock -= count
-                sku.sales += count
-                sku.save()  #记得保存
+                # sku.stock -= count
+                # sku.sales += count
+                # sku.save()  #记得保存
+
+                # 1. 先记录某一个数据    记录哪个数据都可以
+                #旧库存  我们参照这个记录
+                old_stock=sku.stock
+
+                # 2. 我更新的时候，再比对一下这个记录对不对
+                new_stock=sku.stock-count
+                new_sales=sku.sales+count
+
+                result=SKU.objects.filter(id=sku_id,stock=old_stock).update(stock=new_stock,sales=new_sales)
+                # result = 1 表示 有1条记录修改成功
+                # result = 0 表示 没有更新
+
+                if result == 0:
+                    # 暂时回滚和返回下单失败
+                    transaction.savepoint_rollback(point)
+                    return JsonResponse({'code':400,'errmsg':'下单失败~~~~~~~'})
 
                 #       2.9 累加总数量和总金额
                 orderinfo.total_count+=count
@@ -315,3 +334,43 @@ class OrderCommitView(LoginRequiredJSONMixin,View):
         # 四。返回响应
         return JsonResponse({'code':0,'errmsg':'ok','order_id':order_id})
 
+"""
+解决并发的超卖问题：
+① 队列
+② 锁
+    悲观锁： 当查询某条记录时，即让数据库为该记录加锁，锁住记录后别人无法操作
+    
+            悲观锁类似于我们在多线程资源竞争时添加的互斥锁，容易出现死锁现象
+            
+    举例：
+
+    甲   1,3,5,7
+    
+    乙   2,4,7,5
+    
+     
+    乐观锁:    乐观锁并不是真的锁。
+            在更新的时候判断此时的库存是否是之前查询出的库存，
+            如果相同，表示没人修改，可以更新库存，否则表示别人抢过资源，不再执行库存更新。
+              
+    
+
+    举例：
+                桌子上有10个肉包子。  9    8 
+                
+                现在有5个人。 这5个人，每跑1km。只有第一名才有资格吃一个肉包子。 
+                
+                5
+                
+                4
+                
+                3 
+    
+    步骤：
+            1. 先记录某一个数据  
+            2. 我更新的时候，再比对一下这个记录对不对  
+            
+            
+            
+
+"""
