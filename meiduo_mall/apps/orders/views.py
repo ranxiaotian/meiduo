@@ -279,52 +279,58 @@ class OrderCommitView(LoginRequiredJSONMixin,View):
             ##         {sku_id:count,sku_id:count}
             #       2.5 遍历
             for sku_id,count in carts.items():
-                # 根据选中商品的id进行查询
-                sku=SKU.objects.get(id=sku_id)
-                #       2.6 判断库存是否充足
-                if sku.stock<count:
 
-                    #回滚点
-                    transaction.savepoint_rollback(point)
+                # for i in range(10):
+                while True:
+                    # 根据选中商品的id进行查询
+                    sku=SKU.objects.get(id=sku_id)
+                    #       2.6 判断库存是否充足
+                    if sku.stock<count:
 
-                    #       2.7 如果不充足，下单失败
-                    return JsonResponse({'code':400,'errmsg':'库存不足'})
+                        #回滚点
+                        transaction.savepoint_rollback(point)
 
-                from time import sleep
-                sleep(7)
-                #       2.8 如果充足，则库存减少，销量增加
-                # sku.stock -= count
-                # sku.sales += count
-                # sku.save()  #记得保存
+                        #       2.7 如果不充足，下单失败
+                        return JsonResponse({'code':400,'errmsg':'库存不足'})
 
-                # 1. 先记录某一个数据    记录哪个数据都可以
-                #旧库存  我们参照这个记录
-                old_stock=sku.stock
+                    from time import sleep
+                    sleep(7)
+                    #       2.8 如果充足，则库存减少，销量增加
+                    # sku.stock -= count
+                    # sku.sales += count
+                    # sku.save()  #记得保存
 
-                # 2. 我更新的时候，再比对一下这个记录对不对
-                new_stock=sku.stock-count
-                new_sales=sku.sales+count
+                    # 1. 先记录某一个数据    记录哪个数据都可以
+                    #旧库存  我们参照这个记录
+                    old_stock=sku.stock
 
-                result=SKU.objects.filter(id=sku_id,stock=old_stock).update(stock=new_stock,sales=new_sales)
-                # result = 1 表示 有1条记录修改成功
-                # result = 0 表示 没有更新
+                    # 2. 我更新的时候，再比对一下这个记录对不对
+                    new_stock=sku.stock-count
+                    new_sales=sku.sales+count
 
-                if result == 0:
-                    # 暂时回滚和返回下单失败
-                    transaction.savepoint_rollback(point)
-                    return JsonResponse({'code':400,'errmsg':'下单失败~~~~~~~'})
+                    result=SKU.objects.filter(id=sku_id,stock=old_stock).update(stock=new_stock,sales=new_sales)
+                    # result = 1 表示 有1条记录修改成功
+                    # result = 0 表示 没有更新
 
-                #       2.9 累加总数量和总金额
-                orderinfo.total_count+=count
-                orderinfo.total_amount+=(count*sku.price)
+                    if result == 0:
+                        # sleep(0.005)
+                        continue
+                        # 暂时回滚和返回下单失败
+                        # transaction.savepoint_rollback(point)
+                        # return JsonResponse({'code':400,'errmsg':'下单失败~~~~~~~'})
 
-                #       2.10 保存订单商品信息
-                OrderGoods.objects.create(
-                    order=orderinfo,
-                    sku=sku,
-                    count=count,
-                    price=sku.price
-                )
+                    #       2.9 累加总数量和总金额
+                    orderinfo.total_count+=count
+                    orderinfo.total_amount+=(count*sku.price)
+
+                    #       2.10 保存订单商品信息
+                    OrderGoods.objects.create(
+                        order=orderinfo,
+                        sku=sku,
+                        count=count,
+                        price=sku.price
+                    )
+                    break
             #   3.更新订单的总金额和总数量
             orderinfo.save()
             # 提交点
