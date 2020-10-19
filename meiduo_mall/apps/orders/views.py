@@ -371,6 +371,25 @@ class OrderCommitView(LoginRequiredJSONMixin,View):
             2. 我更新的时候，再比对一下这个记录对不对  
             
             
-            
+MySQL数据库事务隔离级别主要有四种：
+
+    Serializable：串行化，一个事务一个事务的执行。  用的并不多
+    
+    Repeatable read：可重复读，无论其他事务是否修改并提交了数据，在这个事务中看到的数据值始终不受其他事务影响。
+    
+v    Read committed：读取已提交，其他事务提交了对数据的修改后，本事务就能读取到修改后的数据值。
+    
+    Read uncommitted：读取未提交，其他事务只要修改了数据，即使未提交，本事务也能看到修改后的数据值。
+        
+    
+    举例：     5,7 库存 都是  8
+
+    甲   5,   7        5
+    
+    乙  7,    5         5
+    
+    
+MySQL数据库默认使用可重复读（ Repeatable read）
+         
 
 """
