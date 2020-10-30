@@ -340,3 +340,11 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+#########################################################
+JWT_AUTH = {
+
+    'JWT_RESPONSE_PAYLOAD_HANDLER':
+    # 'rest_framework_jwt.utils.jwt_response_payload_handler',
+        'apps.meiduo_admin.user.jwt_response_payload_handler'
+}
