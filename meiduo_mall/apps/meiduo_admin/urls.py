@@ -8,4 +8,6 @@ urlpatterns = [
 
     # 日活统计
     path('statistical/day_active/',home.DailyActiveAPIView.as_view()),
+    # 日下单用户
+    path('statistical/day_orders/',home.DailyOrderCountAPIView.as_view()),
 ]
