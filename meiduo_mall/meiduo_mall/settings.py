@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'apps.carts',
     'apps.orders',
     'apps.pay',
+    'apps.meiduo_admin',
     # CORS
     'corsheaders',
     # haystack
@@ -326,3 +327,16 @@ ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
 ALIPAY_RETURN_URL = 'http://www.meiduo.site:8080/pay_success.html'
 APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/key/app_private_key.pem')
 ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/key/alipay_public_key.pem')
+
+##############################################################
+REST_FRAMEWORK = {
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ),
+    #认证类. 先进行token的验证. 如果没有携带token,就进行session认证.如果session也没有携带就基本认证
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ),
+}
