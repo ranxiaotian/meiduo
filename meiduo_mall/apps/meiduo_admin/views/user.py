@@ -8,6 +8,11 @@
             1.3 返回响应
         2. 最后实现分页
         3. 再实现搜索功能
+            es - elasticsearch
+            模糊查询
+
+            3.1 获取 keyword
+            3.2 根据keywork进行 模糊查询
 
     新增用户    --  增加一个测试用户
 
@@ -50,7 +55,18 @@ class PageNum(PageNumberPagination):
 
 class UserAPIView(ListAPIView):
 
-    queryset = User.objects.all()
+    # queryset = User.objects.all()
+
+    # 设置属性 queryset 只能设置一个查询结果集
+    # 设置方法  def get_queryset(self): 可以根据  不同的业务逻辑返回不同的查询结果集
+    def get_queryset(self):
+
+        keyword=self.request.query_params.get('keyword')
+
+        if keyword:
+            return User.objects.filter(username__contains=keyword)
+
+        return User.objects.all()
 
     serializer_class = UserModelSerializer
 
