@@ -52,8 +52,9 @@ class PageNum(PageNumberPagination):
             ('pagesize', self.page.paginator.per_page)      # 一页多少条记录
         ]))
 
-
-class UserAPIView(ListAPIView):
+from rest_framework.mixins import CreateModelMixin
+from rest_framework.generics import ListCreateAPIView
+class UserAPIView(ListCreateAPIView):
 
     # queryset = User.objects.all()
 
