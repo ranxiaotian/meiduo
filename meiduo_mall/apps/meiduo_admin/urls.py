@@ -21,6 +21,10 @@ urlpatterns = [
     path('skus/simple/',images.ImageSKUAPIView.as_view()),
 
 
+    #
+    path('skus/categories/',sku.GoodsCategoryAPIView.as_view()),
+
+
 
 ]
 

@@ -5,7 +5,7 @@ class GoodsCategory(BaseModel):
     """商品类别"""
     name = models.CharField(max_length=10, verbose_name='名称')
     parent = models.ForeignKey('self', related_name='subs', null=True, blank=True, on_delete=models.CASCADE, verbose_name='父类别')
-
+    # subs=[GoodsCategory]
     class Meta:
         db_table = 'tb_goods_category'
         verbose_name = '商品类别'
