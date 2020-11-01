@@ -2,6 +2,7 @@
 from django.urls import path
 from apps.meiduo_admin.user import meiduo_token
 from apps.meiduo_admin.views import home,user,images
+
 urlpatterns = [
     # path('authorizations/',obtain_jwt_token),
     path('authorizations/',meiduo_token),
@@ -16,8 +17,12 @@ urlpatterns = [
 
     # user
     path('users/',user.UserAPIView.as_view()),
-]
+    # 获取图片新增中的 sku展示
+    path('skus/simple/',images.ImageSKUAPIView.as_view()),
 
+
+
+]
 
 from rest_framework.routers import DefaultRouter
 #  1.创建router实例
