@@ -1,7 +1,7 @@
 # from rest_framework_jwt.views import obtain_jwt_token
 from django.urls import path
 from apps.meiduo_admin.user import meiduo_token
-from apps.meiduo_admin.views import home,user,images
+from apps.meiduo_admin.views import home,user,images,sku
 
 urlpatterns = [
     # path('authorizations/',obtain_jwt_token),
@@ -29,5 +29,11 @@ from rest_framework.routers import DefaultRouter
 rouer=DefaultRouter()
 # 2. 设置路由
 rouer.register('skus/images',images.ImageModelViewSet,basename='images')
+
+
+
+################sku#############################
+rouer.register('skus',sku.SKUModelViewSet,basename='skus')
+
 # 3.追加到 urlpatterns
 urlpatterns+=rouer.urls
