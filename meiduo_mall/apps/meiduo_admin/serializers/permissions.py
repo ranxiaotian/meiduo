@@ -37,4 +37,25 @@ class AdminUserModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=User
-        fields=['id','username','mobile','email']
+        fields= '__all__' #['id','username','mobile','email','password']
+
+        extra_kwargs = {
+            'password':{
+                'write_only':True
+            }
+        }
+
+
+
+    def create(self, validated_data):
+
+        # 让父类调用实现
+        user=super().create(validated_data)
+
+        # 补齐 缺失的内容
+        user.set_password(validated_data.get('password'))
+        user.is_staff=True
+        user.save()
+
+        return user
+
