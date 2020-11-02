@@ -57,5 +57,8 @@ rouer.register('permission/perms',permissions.PermissionModelViewSet,basename='p
 ###############组##################################
 rouer.register('permission/groups',permissions.GroupModelViewSet,basename='groups')
 
+###############普通管理员##################################
+rouer.register('permission/admins',permissions.AdminUserModelViewSet,basename='admins')
+
 # 3.追加到 urlpatterns
 urlpatterns+=rouer.urls
