@@ -15,16 +15,18 @@ class SKUModelSerializer(serializers.ModelSerializer):
 
     """
     前端传递的数据形式是
-    caption: "12不想13香"
-    category_id: 115            ~~~~~~
-    cost_price: "1"
-    is_launched: "true"
-    market_price: "11"
-    name: "13香"
-    price: "1"
-    specs: [{spec_id: "4", option_id: 8}, {spec_id: "5", option_id: 11}]
-    spu_id: 2                   ~~~~~~~
-    stock: "1"
+    {
+        caption: "12不想13香"
+        category_id: 115            ~~~~~~
+        cost_price: "1"
+        is_launched: "true"
+        market_price: "11"
+        name: "13香"
+        price: "1"
+        specs: [{spec_id: "4", option_id: 8}, {spec_id: "5", option_id: 11}]
+        spu_id: 2                   ~~~~~~~
+        stock: "1"
+    }
 
     Q1. 外键中 spu和category的数据  前端是以 category_id 和 spu_id 的形式传递的 所以我们的序列化器 要改变
         spu_id=serializers.IntegerField()
@@ -75,7 +77,20 @@ class SKUModelSerializer(serializers.ModelSerializer):
         # 1. 添加 specs 字段
         # 2. 通过 断点我们发现  self.context['request'] 可以获取 当前的请求对象.
 
-        pass
+
+        # 保存 sku和 sku规格.规格选项
+
+        # 1. 把 规格和规格选项 单独获取出来
+        specs=validated_data.pop('specs')
+        # 2. 先保存sku数据
+        sku=SKU.objects.create(**validated_data)
+        # 3. 对规格和规格选项进行遍历保存
+        for spec in specs:
+            # spec = {spec_id: "4", option_id: 8}
+            SKUSpecification.objects.create(sku=sku,**spec)
+
+
+        return sku
 
 
 
