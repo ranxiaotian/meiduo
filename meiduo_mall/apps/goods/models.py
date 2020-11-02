@@ -119,11 +119,11 @@ class SKUImage(BaseModel):
         return '%s %s' % (self.sku.name, self.id)
 
 
-class SPUSpecification(BaseModel):
+class SPUSpecification(BaseModel):    # BookInfo
     """商品SPU规格"""
     spu = models.ForeignKey(SPU, on_delete=models.CASCADE, related_name='specs', verbose_name='商品SPU')
     name = models.CharField(max_length=20, verbose_name='规格名称')
-
+    #options=[SpecificationOption,SpecificationOption,....]
     class Meta:
         db_table = 'tb_spu_specification'
         verbose_name = '商品SPU规格'
@@ -133,7 +133,7 @@ class SPUSpecification(BaseModel):
         return '%s: %s' % (self.spu.name, self.name)
 
 
-class SpecificationOption(BaseModel):
+class SpecificationOption(BaseModel):    # Peopleinfo
     """规格选项"""
     spec = models.ForeignKey(SPUSpecification, related_name='options', on_delete=models.CASCADE, verbose_name='规格')
     value = models.CharField(max_length=20, verbose_name='选项值')
