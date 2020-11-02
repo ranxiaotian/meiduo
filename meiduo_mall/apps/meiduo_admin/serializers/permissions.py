@@ -19,3 +19,13 @@ class ContentTypeModelSerializer(serializers.ModelSerializer):
     class Meta:
         model=ContentType
         fields=['id','name']
+
+#####################组#################################
+from django.contrib.auth.models import Group
+
+class GroupModelSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Group
+        fileds='__all__'
+

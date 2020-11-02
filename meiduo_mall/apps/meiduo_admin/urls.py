@@ -51,5 +51,8 @@ rouer.register('skus',sku.SKUModelViewSet,basename='skus')
 ###############权限##################################
 rouer.register('permission/perms',permissions.PermissionModelViewSet,basename='perms')
 
+###############组##################################
+rouer.register('permission/groups',permissions.GroupModelViewSet,basename='groups')
+
 # 3.追加到 urlpatterns
 urlpatterns+=rouer.urls
