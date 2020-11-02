@@ -2,6 +2,7 @@
 from django.urls import path
 from apps.meiduo_admin.user import meiduo_token
 from apps.meiduo_admin.views import home,user,images,sku
+from apps.meiduo_admin.views import permissions
 
 urlpatterns = [
     # path('authorizations/',obtain_jwt_token),
@@ -41,6 +42,11 @@ rouer.register('skus/images',images.ImageModelViewSet,basename='images')
 
 ################sku#############################
 rouer.register('skus',sku.SKUModelViewSet,basename='skus')
+
+
+
+###############权限##################################
+rouer.register('permission/perms',permissions.PermissionModelViewSet,basename='perms')
 
 # 3.追加到 urlpatterns
 urlpatterns+=rouer.urls
