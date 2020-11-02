@@ -27,5 +27,5 @@ class GroupModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Group
-        fileds='__all__'
+        fields='__all__'
 

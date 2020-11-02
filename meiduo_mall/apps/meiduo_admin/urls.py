@@ -33,6 +33,9 @@ urlpatterns = [
 
     #权限中 获取 ContentType 的数据
     path('permission/content_types/', permissions.ConentTypeListAPIView.as_view()),
+
+    #组中 获取 权限列表数据
+    path('permission/simple/', permissions.GroupPermissionListAPIView.as_view()),
 ]
 
 from rest_framework.routers import DefaultRouter
