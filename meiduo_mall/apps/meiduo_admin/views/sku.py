@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from apps.goods.models import SKU
 from apps.meiduo_admin.serializers.sku import SKUModelSerializer
 from apps.meiduo_admin.utils import PageNum
-
+from rest_framework.permissions import IsAdminUser,DjangoModelPermissions
 class SKUModelViewSet(ModelViewSet):
 
     # queryset = SKU.objects.all()
@@ -18,6 +18,12 @@ class SKUModelViewSet(ModelViewSet):
     serializer_class = SKUModelSerializer
 
     pagination_class = PageNum
+
+
+    #添加权限
+    # IsAdminUser 登录或者查看
+    # DjangoModelPermissions 对于模型权限的验证
+    permission_classes = [IsAdminUser,DjangoModelPermissions]
 
 
 #######################三级分类数据##############################
