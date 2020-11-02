@@ -30,3 +30,16 @@ class GoodsCategoryAPIView(ListAPIView):
     queryset = GoodsCategory.objects.filter(subs=None)
 
     serializer_class = GoodsCategoryModelSerializer
+
+#######################SPU数据##############################
+"""
+获取所有SPU数据
+"""
+from apps.goods.models import SPU
+from apps.meiduo_admin.serializers.sku import SPUModelSerializer
+
+class SPUListAPIView(ListAPIView):
+
+    queryset = SPU.objects.all()
+
+    serializer_class = SPUModelSerializer

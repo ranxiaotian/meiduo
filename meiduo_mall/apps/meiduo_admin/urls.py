@@ -24,8 +24,8 @@ urlpatterns = [
     #
     path('skus/categories/',sku.GoodsCategoryAPIView.as_view()),
 
-
-
+    #sku 中获取 spu的数据
+    path('goods/simple/', sku.SPUListAPIView.as_view()),
 ]
 
 from rest_framework.routers import DefaultRouter
