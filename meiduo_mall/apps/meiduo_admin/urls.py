@@ -4,6 +4,7 @@ from apps.meiduo_admin.user import meiduo_token
 from apps.meiduo_admin.views import home,user,images,sku
 from apps.meiduo_admin.views import permissions
 from apps.meiduo_admin.views import order
+from apps.meiduo_admin.views import specs,spu,option,brand
 
 urlpatterns = [
     # path('authorizations/',obtain_jwt_token),
@@ -47,6 +48,13 @@ urlpatterns = [
 
     #订单状态
     path('orders/<order_id>/status/',order.OrderStatusAPIView.as_view()),
+
+# 商品作业
+    path('goods/brands/simple/', spu.SPUBrandView.as_view()),
+    path('goods/channel/categories/', spu.ChannelCategorysView.as_view()),
+    path('goods/channel/categories/<int:pk>/', spu.ChannelCategoryView.as_view()),
+    path('goods/specs/simple/', option.OptionSimple.as_view()),
+
 ]
 
 from rest_framework.routers import DefaultRouter
@@ -73,6 +81,23 @@ rouer.register('permission/admins',permissions.AdminUserModelViewSet,basename='a
 
 # 作业订单管理
 rouer.register('orders',order.OrdersView,basename='orders')
+
+# 商品作业
+# 商品规格
+rouer.register(r'goods/specs', specs.SpecsView, basename='spu')
+
+
+#商品品牌
+rouer.register(r'goods/brands', brand.BrandsView, basename='brands')
+
+
+#spu
+rouer.register(r'goods', spu.SPUGoodsView, basename='goods')
+
+
+#商品选项
+rouer.register(r'specs/options', option.OptionsView, basename='specs')
+
 
 # 3.追加到 urlpatterns
 urlpatterns+=rouer.urls
