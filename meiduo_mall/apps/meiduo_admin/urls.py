@@ -3,6 +3,7 @@ from django.urls import path
 from apps.meiduo_admin.user import meiduo_token
 from apps.meiduo_admin.views import home,user,images,sku
 from apps.meiduo_admin.views import permissions
+from apps.meiduo_admin.views import order
 
 urlpatterns = [
     # path('authorizations/',obtain_jwt_token),
@@ -43,6 +44,9 @@ urlpatterns = [
     # 用户总量统计
     path('statistical/total_count/',home.UserTotalCountView.as_view()),
     path('statistical/day_increment/',home.UserDailyActiveCountView.as_view()),
+
+    #订单状态
+    path('orders/<order_id>/status/',order.OrderStatusAPIView.as_view()),
 ]
 
 from rest_framework.routers import DefaultRouter
@@ -66,6 +70,9 @@ rouer.register('permission/groups',permissions.GroupModelViewSet,basename='group
 
 ###############普通管理员##################################
 rouer.register('permission/admins',permissions.AdminUserModelViewSet,basename='admins')
+
+# 作业订单管理
+rouer.register('orders',order.OrdersView,basename='orders')
 
 # 3.追加到 urlpatterns
 urlpatterns+=rouer.urls
