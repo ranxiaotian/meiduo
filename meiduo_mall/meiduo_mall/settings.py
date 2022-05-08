@@ -42,20 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'apps.users',
-    'apps.verifications',
-    'apps.oauth',
-    'apps.areas',
-    'apps.goods',
-    'apps.contents',
-    'apps.carts',
-    'apps.orders',
-    'apps.pay',
-    'apps.meiduo_admin',
     # CORS
     'corsheaders',
-    # haystack
-    'haystack',
-    'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +53,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -76,7 +64,7 @@ ROOT_URLCONF = 'meiduo_mall.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR,'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -101,20 +89,11 @@ DATABASES = {
         'HOST': '127.0.0.1',  # 数据库主机
         'PORT': 3306,  # 数据库端口
         'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'mysql',  # 数据库用户密码
+        'PASSWORD': 'Internet@0810',  # 数据库用户密码
         'NAME': 'meiduo_mall_42'  # 数据库名字
-    },
-    # 'slave': {
-    #     'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
-    #     'HOST': '127.0.0.1',  # 数据库主机
-    #     'PORT': 8306,  # 数据库端口
-    #     'USER': 'root',  # 数据库用户名
-    #     'PASSWORD': 'mysql',  # 数据库用户密码
-    #     'NAME': 'meiduo_mall_42'  # 数据库名字
-    # }
+    }
 }
 
-# DATABASE_ROUTERS = ['utils.db_router.MasterSlaveDBRouter']
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -156,7 +135,7 @@ STATIC_URL = '/static/'
 
 #############django-redis###########################
 CACHES = {
-    "default": {        #省市区数据
+    "default": {        #预留
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/0",
         "OPTIONS": {
@@ -166,27 +145,6 @@ CACHES = {
     "session": {  # 用于保存session数据
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": "redis://127.0.0.1:6379/1",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    },
-    "code": {  # 用于保存session数据
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/2",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    },
-    "history": {  # 用于保存浏览记录数据
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/3",
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        }
-    },
-    "carts": {  # 用于保存购物车数据
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/4",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -238,6 +196,7 @@ LOGGING = {
 }
 
 ##############################
+#add
 # 通过提供一个值给AUTH_USER_MODEL设置，指向自定义的模型，Django允许你覆盖默认的User模型：
 # 这个点式路径包含Django应用的名称（必须位于你的INSTALLED_APPS中），和要用作User模型的Django模型的名称。
 AUTH_USER_MODEL = 'users.User'
@@ -249,105 +208,6 @@ CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8080',
     'http://localhost:8080',
     'http://www.meiduo.site:8080',
-    'http://127.0.0.1:8090',
-    'http://localhost:8090',
-    'http://www.meiduo.site:8090',
     'http://www.meiduo.site:8000'
 )
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
-
-# QQ登录参数
-# 我们申请的 客户端id
-QQ_CLIENT_ID = '101474184'
-# 我们申请的 客户端秘钥
-QQ_CLIENT_SECRET = 'c6ce949e04e12ecc909ae6a8b09b637c'
-# 我们申请时添加的: 登录成功后回调的路径
-QQ_REDIRECT_URI = 'http://www.meiduo.site:8080/oauth_callback.html'
-
-
-############邮件发送相关###########################
-#  让django的哪个类来发送邮件
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# 邮件服务器的主机和端口号
-EMAIL_HOST = 'smtp.163.com'
-EMAIL_PORT = 25
-
-# 使用我的 163服务器 和 授权码
-#发送邮件的邮箱
-EMAIL_HOST_USER = 'qi_rui_hua@163.com'
-#在邮箱中设置的客户端授权密码
-EMAIL_HOST_PASSWORD = '123456abc'
-
-
-#收件人看到的发件人
-# EMAIL_FROM = '美多商城<qi_rui_hua@163.com>'
-
-
-#########加载自定义文件存储类#######################
-# 指定自定义的Django文件存储类
-DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.MyStorage'
-
-
-#########ES的配置#################
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
-        'URL': 'http://192.168.19.128:9200/',
-        'INDEX_NAME': 'meiduo',
-    },
-}
-# 设置搜索 每页返回的记录条数
-HAYSTACK_SEARCH_RESULTS_PER_PAGE = 5
-
-
-#########定时任务##############
-
-"""
-# 元素的第一个参数是 频次
-分 时 日 月 周    命令
-
-M: 分钟（0-59）。每分钟用 * 或者 */1 表示
-H：小时（0-23）。（0表示0点）
-D：天（1-31）。
-m: 月（1-12）。
-d: 一星期内的天（0~6，0为星期天）。
-
-# 元素的第二个参数是 定时任务（函数）
-"""
-CRONJOBS = [
-    ('*/1 * * * *','apps.contents.crons.generic_meiduo_index','>> ' + os.path.join(BASE_DIR, 'logs/crontab.log'))
-
-]
-
-######################支付宝支付相关##################################
-
-ALIPAY_APPID = '2016091600523030'
-ALIPAY_DEBUG = True
-ALIPAY_URL = 'https://openapi.alipaydev.com/gateway.do'
-ALIPAY_RETURN_URL = 'http://www.meiduo.site:8080/pay_success.html'
-APP_PRIVATE_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/key/app_private_key.pem')
-ALIPAY_PUBLIC_KEY_PATH = os.path.join(BASE_DIR, 'apps/pay/key/alipay_public_key.pem')
-
-##############################################################
-REST_FRAMEWORK = {
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
-    #认证类. 先进行token的验证. 如果没有携带token,就进行session认证.如果session也没有携带就基本认证
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-}
-
-#########################################################
-import datetime
-JWT_AUTH = {
-
-    'JWT_RESPONSE_PAYLOAD_HANDLER':
-    # 'rest_framework_jwt.utils.jwt_response_payload_handler',
-        'apps.meiduo_admin.user.jwt_response_payload_handler',
-    #修改token的过期时间
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(days=1),
-}

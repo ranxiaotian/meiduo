@@ -41,12 +41,4 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #导入 users子应用的路由
     path('',include('apps.users.urls')),
-    path('',include('apps.verifications.urls')),
-    path('',include('apps.oauth.urls')),
-    path('',include('apps.areas.urls')),
-    path('',include('apps.goods.urls')),
-    path('',include('apps.carts.urls')),
-    path('',include('apps.orders.urls')),
-    path('',include('apps.pay.urls')),
-    path('meiduo_admin/',include('apps.meiduo_admin.urls')),
 ]
