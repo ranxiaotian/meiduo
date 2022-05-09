@@ -103,7 +103,7 @@ debug + 断点配合使用 这个我们看到程序执行的过程
 """
 
 class SmsCodeView(View):
-    """
+
     def get(self,request,mobile):
         # 1. 获取请求参数
         image_code=request.GET.get('image_code')
@@ -145,19 +145,18 @@ class SmsCodeView(View):
         pipeline.execute()
 
         # # 5. 保存短信验证码
-        # redis_cli.setex(mobile,300,sms_code)
+        #redis_cli.setex(mobile,300,sms_code)
         # # 添加一个发送标记.有效期 60秒 内容是什么都可以
-        # redis_cli.setex('send_flag_%s'%mobile,60,1)
+        #redis_cli.setex('send_flag_%s'%mobile,60,1)
 
         # 6. 发送短信验证码
-        # from libs.yuntongxun.sms import CCP
-        # CCP().send_template_sms(mobile,[sms_code,5],1)
+        #from libs.yuntongxun.sms import CCP
+        #CCP().send_template_sms(mobile,[sms_code,5],1)
 
-        #from celery_tasks.sms.tasks import celery_send_sms_code
+        from celery_tasks.sms.tasks import celery_send_sms_code
         # delay 的参数 等同于 任务（函数）的参数
-        #celery_send_sms_code.delay(mobile,sms_code)
+        celery_send_sms_code.delay(mobile,sms_code)
 
         # 7. 返回响应
         return JsonResponse({'code':0,'errmsg':'ok'})
-"""
-    pass
+
