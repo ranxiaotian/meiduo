@@ -298,7 +298,7 @@ class CenterView(LoginRequiredJSONMixin, View):
 
 """
 
-"""
+
 from apps.users.models import Address
 
 
@@ -383,5 +383,5 @@ class AddressView(LoginRequiredJSONMixin, View):
         # 3.返回响应
         return JsonResponse({'code': 0, 'errmsg': 'ok', 'addresses': address_list})
 
-"""
+
 #################################################
