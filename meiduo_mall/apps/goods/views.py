@@ -204,10 +204,10 @@ class ListView(View):
  我们是借助于 haystack 来对接 elasticsearch
  所以 haystack 可以帮助我们 查询数据
 """
-#from haystack.views import SearchView
+from haystack.views import SearchView
 from django.http import JsonResponse
 
-"""
+
 class SKUSearchView(SearchView):
 
     def create_response(self):
@@ -228,7 +228,7 @@ class SKUSearchView(SearchView):
             })
 
         return JsonResponse(sku_list,safe=False)
-"""
+
 
 """
 需求：

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'apps.users',
     # CORS
     'corsheaders',
+    'haystack',
 
     'apps.verifications',
     'apps.areas',
@@ -223,3 +224,17 @@ CORS_ORIGIN_WHITELIST = (
     'http://www.meiduo.site:8000'
 )
 CORS_ALLOW_CREDENTIALS = True  # 允许携带cookie
+#########加载自定义文件存储类#######################
+# 指定自定义的Django文件存储类
+DEFAULT_FILE_STORAGE = 'utils.fastdfs.storage.MyStorage'
+
+#########ES的配置#################
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.elasticsearch_backend.ElasticsearchSearchEngine',
+        'URL': 'http://192.168.74.129:9200/',
+        'INDEX_NAME': 'meiduo',
+    },
+}
+# 设置搜索 每页返回的记录条数
+HAYSTACK_SEARCH_RESULTS_PER_PAGE = 5
