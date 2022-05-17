@@ -53,6 +53,9 @@ INSTALLED_APPS = [
     'apps.goods',
     'apps.contents',
     'apps.carts',
+    'apps.orders',
+    'apps.meiduo_admin',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -267,3 +270,16 @@ CRONJOBS = [
     ('*/1 * * * *','apps.contents.crons.generic_meiduo_index','>> ' + os.path.join(BASE_DIR, 'logs/crontab.log'))
 
 ]
+
+##############################################################
+# REST_FRAMEWORK = {
+#     # 'DEFAULT_PERMISSION_CLASSES': (
+#     #     'rest_framework.permissions.AllowAny',
+#     # ),
+#     #认证类. 先进行token的验证. 如果没有携带token,就进行session认证.如果session也没有携带就基本认证
+#     'DEFAULT_AUTHENTICATION_CLASSES': (
+#         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+#         'rest_framework.authentication.SessionAuthentication',
+#         'rest_framework.authentication.BasicAuthentication',
+#     ),
+# }
