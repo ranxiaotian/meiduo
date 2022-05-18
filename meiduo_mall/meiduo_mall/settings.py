@@ -29,8 +29,11 @@ SECRET_KEY = '+qiwhqle^zz4=zjq%q!buk81_5$t3nxk0+^%fm90iq22d=n3b('
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['www.meiduo.site','127.0.0.1']
+# ALLOWED_HOSTS = ['www.meiduo.site','127.0.0.1']
+ALLOWED_HOSTS = ['*']
 
+# 静态文件收集目录
+STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
 # Application definition
 
@@ -100,8 +103,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',  # 数据库引擎
         'HOST': '127.0.0.1',  # 数据库主机
         'PORT': 3306,  # 数据库端口
-        'USER': 'root',  # 数据库用户名
-        'PASSWORD': 'Internet@0810',  # 数据库用户密码
+        'USER': 'root1',  # 数据库用户名
+        'PASSWORD': 'root1',  # 数据库用户密码
         'NAME': 'meiduo_mall_42'  # 数据库名字
     }
 }
